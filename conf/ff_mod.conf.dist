@@ -1,0 +1,17 @@
+#
+# Copyright (C) 2016+ AzerothCore <www.azerothcore.org>, released under GNU AGPL v3 license: https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3
+#
+
+[worldserver]
+
+########################################
+# Fast Forward configuration
+########################################
+#
+#    FFMod.Enable
+#        Description: Enable FastForward functionality (setting currently ignored)
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+FFMod.Enable = 1
