@@ -1,26 +1,51 @@
-#include "Chat.h"
-#include "Configuration/Config.h"
-#include "DataMap.h"
-#include "Mail.h"
-#include "MapMgr.h"
-#include "Object.h"
-#include "Pet.h"
-#include "Player.h"
-#include "ReputationMgr.h"
-#include "ScriptMgr.h"
-#include "FFItemMgr.h"
 
-/*
- * Coded by Geeb - For AzerothCore
- */
+#include "FastForward.h"
+
+FastForward* FastForward::instance()
+{
+    static FastForward instance;
+    return &instance;
+}
+
+bool FastForward::IsLevelAllowed(int level) const
+{
+    int upperBound = std::min((uint8)80, maxAllowableLevel);
+    int lowerBound = std::max((uint8)10, minAllowableLevel);
+
+    return lowerBound <= level && level <= upperBound;
+}
+
+class FF_WorldScript : public WorldScript
+{
+public:
+    FF_WorldScript() : WorldScript("FF_WorldScript") { }
+
+    void OnBeforeConfigLoad(bool /*reload*/) override
+    {
+        LoadFFConfig();
+    }
+
+private:
+    static void LoadFFConfig() {
+        sFastForward->fastforwardEnabled = sConfigMgr->GetOption<bool>("FastForward.Enable", false);
+        if (sFastForward->Enabled()) {
+            sFastForward->maxAllowableLevel = sConfigMgr->GetOption<uint8>("FastForward.MaxAllowableLevel", 80);
+            sFastForward->minAllowableLevel = sConfigMgr->GetOption<uint8>("FastForward.MinAllowableLevel", 10);
+        }
+    }
+};
 
 class FF_Character_Prep : public PlayerScript
 {
 public:
     FF_Character_Prep() : PlayerScript("FF_Character_Prep") { }
 
-    void OnPlayerFirstLogin(Player* p) override
+    void OnPlayerCreate(Player *p) override
     {
+        if (!sFastForward->Enabled()) {
+            return;
+        }
+
         uint32 accountId = p->GetSession()->GetAccountId();
         QueryResult result = CharacterDatabase.Query("SELECT `spec`,`level` FROM `ff_character_prep` WHERE `claimed` = 0 AND `created_on` >= NOW() - INTERVAL 1 HOUR AND `account_id` = '{}';", accountId);
         if (result)
@@ -40,7 +65,7 @@ public:
 
             // =======|   LOCATION  |=======
             WorldLocation dalLoc = WorldLocation(571, 5841.65f, 642.086f, 647.512f, 3.83756f); // Dalaran
-            p->TeleportTo(571, 5814.0547f, 448.982f, 658.7519f, 0.0f); // Krasus' Landing
+            //p->TeleportTo(571, 5814.0547f, 448.982f, 658.7519f, 0.0f); // Krasus' Landing
             p->SetHomebind(dalLoc, 4395);
 
             // =======|   LEVEL     |=======
@@ -116,41 +141,48 @@ public:
 
             // Equipped items
             if (targetLevel >= 10) {
+                // Remove starting items
+                TryUnequipItem(p, EQUIPMENT_SLOT_CHEST);
+                TryUnequipItem(p, EQUIPMENT_SLOT_LEGS);
+                TryUnequipItem(p, EQUIPMENT_SLOT_FEET);
+                TryUnequipItem(p, EQUIPMENT_SLOT_MAINHAND);
+
+                // Add new items
                 uint32 headItem = itemMgr->GetHeadItem();
-                if (headItem != 0) { p->AddItem(headItem, 1); }
+                if (headItem != 0) { p->StoreNewItemInBestSlots(headItem, 1); }
                 uint32 neckItem = itemMgr->GetNeckItem();
-                if (neckItem != 0) { p->AddItem(neckItem, 1); }
+                if (neckItem != 0) { p->StoreNewItemInBestSlots(neckItem, 1); }
                 uint32 shoulderItem = itemMgr->GetShoulderItem();
-                if (shoulderItem != 0) { p->AddItem(shoulderItem, 1); }
+                if (shoulderItem != 0) { p->StoreNewItemInBestSlots(shoulderItem, 1); }
                 uint32 chestItem = itemMgr->GetChestItem();
-                if (chestItem != 0) { p->AddItem(chestItem, 1); }
+                if (chestItem != 0) { p->StoreNewItemInBestSlots(chestItem, 1); }
                 uint32 waistItem = itemMgr->GetWaistItem();
-                if (waistItem != 0) { p->AddItem(waistItem, 1); }
+                if (waistItem != 0) { p->StoreNewItemInBestSlots(waistItem, 1); }
                 uint32 legsItem = itemMgr->GetLegsItem();
-                if (legsItem != 0) { p->AddItem(legsItem, 1); }
+                if (legsItem != 0) { p->StoreNewItemInBestSlots(legsItem, 1); }
                 uint32 feetItem = itemMgr->GetFeetItem();
-                if (feetItem != 0) { p->AddItem(feetItem, 1); }
+                if (feetItem != 0) { p->StoreNewItemInBestSlots(feetItem, 1); }
                 uint32 wristItem = itemMgr->GetWristsItem();
-                if (wristItem != 0) { p->AddItem(wristItem, 1); }
+                if (wristItem != 0) { p->StoreNewItemInBestSlots(wristItem, 1); }
                 uint32 handsItem = itemMgr->GetHandsItem();
-                if (handsItem != 0) { p->AddItem(handsItem, 1); }
+                if (handsItem != 0) { p->StoreNewItemInBestSlots(handsItem, 1); }
                 uint32 backItem = itemMgr->GetBackItem();
-                if (backItem != 0) { p->AddItem(backItem, 1); }
+                if (backItem != 0) { p->StoreNewItemInBestSlots(backItem, 1); }
                 uint32 ringItem1 = itemMgr->GetFingerItem1();
-                if (ringItem1 != 0) { p->AddItem(ringItem1, 1); }
+                if (ringItem1 != 0) { p->StoreNewItemInBestSlots(ringItem1, 1); }
                 uint32 ringItem2 = itemMgr->GetFingerItem2(ringItem1);
-                if (ringItem2 != 0) { p->AddItem(ringItem2, 1); }
+                if (ringItem2 != 0) { p->StoreNewItemInBestSlots(ringItem2, 1); }
                 uint32 trinket1 = itemMgr->GetTrinket1();
-                if (trinket1 != 0) { p->AddItem(trinket1, 1); }
+                if (trinket1 != 0) { p->StoreNewItemInBestSlots(trinket1, 1); }
                 uint32 trinket2 = itemMgr->GetTrinket2(trinket1);
-                if (trinket2 != 0) { p->AddItem(trinket2, 1); }
+                if (trinket2 != 0) { p->StoreNewItemInBestSlots(trinket2, 1); }
 
                 uint32 mainHand = itemMgr->GetMainHandWeapon();
-                if (mainHand != 0) { p->AddItem(mainHand, 1); }
+                if (mainHand != 0) { p->StoreNewItemInBestSlots(mainHand, 1); }
                 uint32 offHand = itemMgr->GetSecondaryItem(mainHand);
-                if (offHand != 0) { p->AddItem(offHand, 1); }
+                if (offHand != 0) { p->StoreNewItemInBestSlots(offHand, 1); }
                 uint32 ranged = itemMgr->GetRangeWeapon();
-                if (ranged != 0) { p->AddItem(ranged, 1); }
+                if (ranged != 0) { p->StoreNewItemInBestSlots(ranged, 1); }
 
                 uint32* glyphs = itemMgr->GetGlyphs();
                 for (uint8 i = 0; i < 6; i++)
@@ -167,7 +199,7 @@ public:
                 if (food != 0) { p->AddItem(food, 10); }
             }
 
-            // Gold
+            // =======|   GOLD      |=======
             uint32 characterMoney = DetermineCharacterMoney(p, targetLevel);
             welcomeMail.AddMoney(characterMoney);
 
@@ -242,6 +274,31 @@ public:
     }
 
 private:
+    static void TryUnequipItem(Player* player, uint8 slot) {
+        Item* unequipItem = player->GetItemByPos(INVENTORY_SLOT_BAG_0, slot);
+        if (!unequipItem) {
+            return;
+        }
+
+        ItemPosCountVec unequipDestination;
+        uint8 unequipMsg = player->CanStoreItem(NULL_BAG, NULL_SLOT, unequipDestination, unequipItem, false);
+        if (unequipMsg == EQUIP_ERR_OK) {
+            player->RemoveItem(INVENTORY_SLOT_BAG_0, slot, true);
+            player->StoreItem(unequipDestination, unequipItem, true);
+        }
+        else {
+            player->MoveItemFromInventory(INVENTORY_SLOT_BAG_0, slot, true);
+            CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+            unequipItem->DeleteFromInventoryDB(trans);
+            unequipItem->SaveToDB(trans);
+
+            std::string subject = player->GetSession()->GetAcoreString(LANG_NOT_EQUIPPED_ITEM);
+            MailDraft(subject, "There were problems with equipping one or several items").AddItem(unequipItem).SendMailTo(trans, player, MailSender(player, MAIL_STATIONERY_GM), MAIL_CHECK_MASK_COPIED);
+
+            CharacterDatabase.CommitTransaction(trans);
+        }
+    }
+
     static uint32 DetermineCharacterMoney(Player* player, uint8 targetLevel) {
 
         // quartic function that follows accumulated skill costs at a level
@@ -1062,13 +1119,17 @@ public:
     }
 
     static bool HandleFFCommand(ChatHandler* handler) {
-        handler->PSendSysMessage("(FF) FastForward on version 1.0");
+        if (!sFastForward->Enabled()) { return true; }
+
+        handler->PSendSysMessage("(FF) FastForward on version 1.1");
         return true;
     }
 
     static bool HandlePrepCommand(ChatHandler* handler, int pSpec, int pLevel) {
-        if (pLevel <= 10 || pLevel > 80) {
-            handler->PSendSysMessage("Level must be between 10 and 80 for pregenerated characters.");
+        if (!sFastForward->Enabled()) { return true; }
+
+        if (!sFastForward->IsLevelAllowed(pLevel)) {
+            handler->PSendSysMessage("Level out of allowable range for pregenerated characters.");
             return false;
         }
 
@@ -1085,6 +1146,18 @@ public:
     }
 
     static bool HandlePrepForCommand(ChatHandler* handler, std::string accountName, int spec, int level) {
+        if (!sFastForward->Enabled()) { return true; }
+
+        if (!sFastForward->IsLevelAllowed(level)) {
+            handler->PSendSysMessage("Level out of allowable range for pregenerated characters.");
+            return false;
+        }
+
+        if (spec <= 0 || (spec > 30 && spec != 99)) {
+            handler->PSendSysMessage("Spec must correspond to a valid class talent tree spec. See FastForward spec list.");
+            return false;
+        }
+
         uint32 accountId = LookupAccountByName(handler, accountName);
         if (accountId > 0) {
             PrepCharacterCore(accountId, spec, level);
@@ -1100,6 +1173,8 @@ public:
     }
 
     static bool HandleCancelCommand(ChatHandler* handler) {
+        if (!sFastForward->Enabled()) { return true; }
+
         uint32 accountId = handler->GetSession()->GetAccountId();
         CancelPrepCore(accountId);
         handler->PSendSysMessage("Character prep associated with this account has been canceled.");
@@ -1108,6 +1183,8 @@ public:
     }
 
     static bool HandleCancelForCommand(ChatHandler* handler, std::string accountName) {
+        if (!sFastForward->Enabled()) { return true; }
+
         uint32 accountId = LookupAccountByName(handler, accountName);
         if (accountId > 0) {
             CancelPrepCore(accountId);
@@ -1135,8 +1212,9 @@ public:
     }
 };
 
-void AddFFCharacterPrepScripts()
+void AddFastForwardScripts()
 {
+    new FF_WorldScript();
     new FF_Character_Prep();
     new FF_Command();
 }

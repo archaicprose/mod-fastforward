@@ -1,5 +1,5 @@
-void AddFFCharacterPrepScripts();
+void AddFastForwardScripts();
 
 void Addmod_fastforwardScripts() {
-    AddFFCharacterPrepScripts();
+    AddFastForwardScripts();
 }
