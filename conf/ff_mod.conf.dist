@@ -1,0 +1,29 @@
+#
+# Copyright (C) 2016+ AzerothCore <www.azerothcore.org>, released under GNU AGPL v3 license: https://github.com/azerothcore/azerothcore-wotlk/blob/master/LICENSE-AGPL3
+#
+
+[worldserver]
+
+########################################
+# Fast Forward configuration
+########################################
+#
+#    FastForward.Enable
+#        Description: Enable FastForward functionality.
+#            If set to 0, prep commands will be ignored and prepped characters will not be fast-forwarded
+#        Default:     0 - Disabled
+#                     1 - Enabled
+#
+
+FastForward.Enable = 1
+
+#
+#    FastForward.MaxAllowableLevel
+#    FastForward.MinAllowableLevel
+#        Description: Maximum and minimum allowable levels for fast-forward.
+#            These values are inclusive, and control which range of levels players are allowed to choose for their fast-forwarded characters. There is a complete lower bound of 10 and a complete upper bound of 80.
+#        Default:     80 (Max)
+#                     10 (Min)
+
+FastForward.MaxAllowableLevel = 80
+FastForward.MinAllowableLevel = 10
