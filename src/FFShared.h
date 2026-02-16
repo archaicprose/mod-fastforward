@@ -6,9 +6,9 @@
 
 
 struct FFSpec {
-	TalentTree ffspec;
-	Classes ffclass;
-	uint8 fforiginal;
+    TalentTree ffspec;
+    Classes ffclass;
+    uint8 fforiginal;
 };
 
 enum FFSpecDefinition {

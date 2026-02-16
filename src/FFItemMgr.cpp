@@ -674,7 +674,7 @@ uint32 FFItemMgr::GetHealthPotion()
         level > 45 ? 13446 :
         level > 35 ? 3928 :
         level > 20 ? 1710 :
-        858;       
+        858;
 }
 
 uint32 FFItemMgr::GetManaPotion()
