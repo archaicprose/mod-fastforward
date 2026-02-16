@@ -10,7 +10,6 @@
 #include "ItemTemplate.h"
 #include "FFShared.h"
 
-
 class FFItemScorer {
 private:
     uint8 priorityStat1;

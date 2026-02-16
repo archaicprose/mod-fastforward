@@ -235,7 +235,6 @@ public:
                 p->GetReputationMgr().ModifyReputation(sFactionStore.LookupEntry(factionId), reveredReputation, true);
             }
 
-
             // =======|   SAVE     |=======
             CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
             p->SaveToDB(trans, false, false);

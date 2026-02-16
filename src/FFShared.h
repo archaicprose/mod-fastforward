@@ -4,7 +4,6 @@
 
 #include "Player.h"
 
-
 struct FFSpec {
     TalentTree ffspec;
     Classes ffclass;
