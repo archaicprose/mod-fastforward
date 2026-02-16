@@ -42,3 +42,15 @@ bool FFClassHandler::TryCompleteNewQuest(Player* player, uint32 questId) {
     }
     return false;
 }
+
+void FFClassHandler::LearnForLevel(Player* p, const std::unordered_map<uint8, std::vector<uint32>>& spellMap) {
+    for (int l = 1; l <= level; l++)
+    {
+        if (spellMap.contains(l)) {
+            std::vector<uint32> spellsAtLevel = spellMap.at(l);
+            for (uint32 spell : spellsAtLevel) {
+                p->learnSpell(spell);
+            }
+        }
+    }
+}

@@ -31,12 +31,13 @@ enum WeaponProficiencies
 
 class FFClassHandler {
 private:
-    virtual void LearnWeaponSkills(Player* p) {}
-    virtual void LearnArmorSkills(Player* p) {}
+    virtual void LearnWeaponSkills(Player* /* p */) {}
+    virtual void LearnArmorSkills(Player* /* p */) {}
 protected:
     FFSpec* specInfo;
     uint8 level;
 
+    void LearnForLevel(Player* p, const std::unordered_map<uint8, std::vector<uint32>>& spellMap);
     static bool TryCompleteNewQuest(Player* p, uint32 questId);
     static void LearnPlateSkill(Player* p, uint8 targetLevel) {
         if (targetLevel >= 40) {
@@ -58,7 +59,7 @@ public:
     ~FFClassHandler() {}
 
     virtual void LearnSkills(Player* p);
-    virtual void HandleClassFeatures(Player* p) {}
+    virtual void HandleClassFeatures(Player* /* p */) {}
 };
 
 #endif // !FF_CLASS_MGR_H

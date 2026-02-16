@@ -259,6 +259,10 @@ public:
         //p->TeleportTo(571, 5814.0547f, 448.982f, 658.7519f, 0.0f); // Krasus' Landing
         p->SetHomebind(dalLoc, 4395);
 
+        // If skipping DK start, teleport out of instanced Archeron
+        if (p->IsClass(CLASS_DEATH_KNIGHT)) {
+            p->TeleportTo(571, 5814.0547f, 448.982f, 658.7519f, 0.0f); // Krasus' Landing
+        }
     }
 
 private:

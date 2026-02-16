@@ -1,5 +1,38 @@
 #include "FFDeathKnightClassHandler.h"
 
+const std::unordered_map<uint8, std::vector<uint32>> FF_DK_SPELLS =
+{
+    { 40, { 70164 } },
+    { 55, { 53343, 53341 } },
+    { 56, { 49998, 46584, 50842 } },
+    { 57, { 48263, 47528, 54447, 53342 } },
+    { 58, { 45524, 48721 } },
+    { 59, { 47476, 49926 } },
+    { 60, { 43265, 53331, 49917 } },
+    { 61, { 49020, 49896, 3714 } },
+    { 62, { 48792, 49892 } },
+    { 63, { 53323, 54446, 49999 } },
+    { 64, { 45529, 49927 } },
+    { 65, { 57330, 56222, 49918 } },
+    { 66, { 48743, 49939 } },
+    { 67, { 56815, 49936, 49903, 51423 } },
+    { 68, { 48707, 49893 } },
+    { 69, { 49928 } },
+    { 70, { 53344, 48265, 62158, 45463, 49919 } },
+    { 72, { 61999, 49940 } },
+    { 73, { 49937, 49904, 51424 } },
+    { 74, { 49929 } },
+    { 75, { 47568, 57623, 49923, 49920 } },
+    { 76, { 49894 } },
+    { 78, { 49909, 49941 } },
+    { 79, { 51425 } },
+    { 80, { 42650, 49938, 49924, 49895, 49921, 49930 } },
+};
+
+const std::vector<uint32> FF_DK_TALENT_B = {};
+const std::vector<uint32> FF_DK_TALENT_F = {};
+const std::vector<uint32> FF_DK_TALENT_U = {};
+
 void FFDeathKnightClassHandler::LearnWeaponSkills(Player* p)
 {
     p->learnSpell(TWO_H_SWORDS);
@@ -14,6 +47,7 @@ void FFDeathKnightClassHandler::LearnWeaponSkills(Player* p)
 void FFDeathKnightClassHandler::LearnSkills(Player* p)
 {
     FFClassHandler::LearnSkills(p);
+    FFClassHandler::LearnForLevel(p, FF_DK_SPELLS);
 }
 
 void FFDeathKnightClassHandler::HandleClassFeatures(Player* p)
