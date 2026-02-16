@@ -64,9 +64,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_PALADIN_SPELLS_H =
     { 64, { 53736 } },
 };
 
-const std::vector<uint32> FF_PALADIN_TALENT_H = {};
-const std::vector<uint32> FF_PALADIN_TALENT_P = {};
-const std::vector<uint32> FF_PALADIN_TALENT_R = {};
+//const std::vector<uint32> FF_PALADIN_TALENT_H = {};
+//const std::vector<uint32> FF_PALADIN_TALENT_P = {};
+//const std::vector<uint32> FF_PALADIN_TALENT_R = {};
 
 void FFPaladinClassHandler::LearnWeaponSkills(Player* p)
 {

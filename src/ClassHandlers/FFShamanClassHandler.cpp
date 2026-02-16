@@ -66,9 +66,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_SHAMAN_SPELLS_H =
     { 70, { 2825 } },
 };
 
-const std::vector<uint32> FF_SHAMAN_TALENT_EL = {};
-const std::vector<uint32> FF_SHAMAN_TALENT_EN = {};
-const std::vector<uint32> FF_SHAMAN_TALENT_R = {};
+//const std::vector<uint32> FF_SHAMAN_TALENT_EL = {};
+//const std::vector<uint32> FF_SHAMAN_TALENT_EN = {};
+//const std::vector<uint32> FF_SHAMAN_TALENT_R = {};
 
 void FFShamanClassHandler::LearnWeaponSkills(Player* p)
 {

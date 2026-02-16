@@ -29,9 +29,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_DK_SPELLS =
     { 80, { 42650, 49938, 49924, 49895, 49921, 49930 } },
 };
 
-const std::vector<uint32> FF_DK_TALENT_B = {};
-const std::vector<uint32> FF_DK_TALENT_F = {};
-const std::vector<uint32> FF_DK_TALENT_U = {};
+//const std::vector<uint32> FF_DK_TALENT_B = {};
+//const std::vector<uint32> FF_DK_TALENT_F = {};
+//const std::vector<uint32> FF_DK_TALENT_U = {};
 
 void FFDeathKnightClassHandler::LearnWeaponSkills(Player* p)
 {

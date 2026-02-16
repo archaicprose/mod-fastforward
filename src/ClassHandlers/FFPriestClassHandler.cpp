@@ -53,9 +53,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_PRIEST_SPELLS =
     { 80, { 64901, 64843, 48066, 48125, 48162, 53023, 48158, 48078, 48074, 48161, 48068, 48073 } },
 };
 
-const std::vector<uint32> FF_PRIEST_TALENT_D = {};
-const std::vector<uint32> FF_PRIEST_TALENT_H = {};
-const std::vector<uint32> FF_PRIEST_TALENT_S = {};
+//const std::vector<uint32> FF_PRIEST_TALENT_D = {};
+//const std::vector<uint32> FF_PRIEST_TALENT_H = {};
+//const std::vector<uint32> FF_PRIEST_TALENT_S = {};
 
 void FFPriestClassHandler::LearnWeaponSkills(Player* p)
 {

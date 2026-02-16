@@ -49,9 +49,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_ROGUE_SPELLS =
     { 80, { 51723, 48638, 48676, 57993, 48691, 48657 } },
 };
 
-const std::vector<uint32> FF_ROGUE_TALENT_A = {};
-const std::vector<uint32> FF_ROGUE_TALENT_C = {};
-const std::vector<uint32> FF_ROGUE_TALENT_S = {};
+//const std::vector<uint32> FF_ROGUE_TALENT_A = {};
+//const std::vector<uint32> FF_ROGUE_TALENT_C = {};
+//const std::vector<uint32> FF_ROGUE_TALENT_S = {};
 
 void FFRogueClassHandler::LearnWeaponSkills(Player* p)
 {

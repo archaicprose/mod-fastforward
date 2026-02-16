@@ -77,9 +77,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_MAGE_PORTALS_H =
     { 65, { 35717 } },
 };
 
-const std::vector<uint32> FF_MAGE_TALENTS_A = {};
-const std::vector<uint32> FF_MAGE_TALENTS_FI = {};
-const std::vector<uint32> FF_MAGE_TALENTS_FR = {};
+//const std::vector<uint32> FF_MAGE_TALENTS_A = {};
+//const std::vector<uint32> FF_MAGE_TALENTS_FI = {};
+//const std::vector<uint32> FF_MAGE_TALENTS_FR = {};
 
 void FFMageClassHandler::LearnWeaponSkills(Player* p)
 {

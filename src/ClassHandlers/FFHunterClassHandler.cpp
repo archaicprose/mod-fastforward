@@ -53,9 +53,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_HUNTER_SPELLS =
     {80, {48990, 49048, 53339, 58434, 60192, 61006, 61847, 62757}},
 };
 
-const std::vector<uint32> FF_HUNTER_TALENT_BM = {};
-const std::vector<uint32> FF_HUNTER_TALENT_M = {};
-const std::vector<uint32> FF_HUNTER_TALENT_S = {};
+//const std::vector<uint32> FF_HUNTER_TALENT_BM = {};
+//const std::vector<uint32> FF_HUNTER_TALENT_M = {};
+//const std::vector<uint32> FF_HUNTER_TALENT_S = {};
 
 void FFHunterClassHandler::LearnWeaponSkills(Player* p)
 {

@@ -54,9 +54,9 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_WARLOCK_SPELLS =
     { 80, { 58887, 48020, 57946, 47836, 48018, 47811, 47867, 61290, 47825, 47838, 47889, 60220 } },
 };
 
-const std::vector<uint32> FF_WARLOCK_TALENT_A = {};
-const std::vector<uint32> FF_WARLOCK_TALENT_DEMO = {};
-const std::vector<uint32> FF_WARLOCK_TALENT_DESTRO = {};
+//const std::vector<uint32> FF_WARLOCK_TALENT_A = {};
+//const std::vector<uint32> FF_WARLOCK_TALENT_DEMO = {};
+//const std::vector<uint32> FF_WARLOCK_TALENT_DESTRO = {};
 
 void FFWarlockClassHandler::LearnWeaponSkills(Player* p)
 {

@@ -55,10 +55,10 @@ const std::unordered_map<uint8, std::vector<uint32>> FF_DRUID_SPELLS =
     { 80, { 50464, 48463, 48470, 48451, 48566, 48469, 48564, 48568, 48441, 48572, 49800, 48447, 48467, 50763 } },
 };
 
-const std::vector<uint32> FF_DRUID_TALENT_B = {};
-const std::vector<uint32> FF_DRUID_TALENT_F = {};
-const std::vector<uint32> FF_DRUID_TALENT_R = {};
-const std::vector<uint32> FF_DRUID_TALENT_G = {}; // Guardian
+//const std::vector<uint32> FF_DRUID_TALENT_B = {};
+//const std::vector<uint32> FF_DRUID_TALENT_F = {};
+//const std::vector<uint32> FF_DRUID_TALENT_R = {};
+//const std::vector<uint32> FF_DRUID_TALENT_G = {}; // Guardian
 
 void FFDruidClassHandler::LearnWeaponSkills(Player* p)
 {
