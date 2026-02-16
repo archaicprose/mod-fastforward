@@ -71,7 +71,7 @@ void FFRogueClassHandler::LearnSkills(Player* p)
     FFClassHandler::LearnForLevel(p, FF_ROGUE_SPELLS);
 }
 
-void FFRogueClassHandler::HandleClassFeatures(Player* p)
+void FFRogueClassHandler::HandleClassFeatures(Player* /* p */)
 {
 
 }

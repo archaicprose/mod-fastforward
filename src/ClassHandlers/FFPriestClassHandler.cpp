@@ -72,7 +72,7 @@ void FFPriestClassHandler::LearnSkills(Player* p)
     FFClassHandler::LearnForLevel(p, FF_PRIEST_SPELLS);
 }
 
-void FFPriestClassHandler::HandleClassFeatures(Player* p)
+void FFPriestClassHandler::HandleClassFeatures(Player* /* p */)
 {
 
 }

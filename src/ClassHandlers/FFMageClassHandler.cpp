@@ -104,7 +104,7 @@ void FFMageClassHandler::LearnSkills(Player* p)
     }
 }
 
-void FFMageClassHandler::HandleClassFeatures(Player* p)
+void FFMageClassHandler::HandleClassFeatures(Player* /* p */)
 {
 
 }
