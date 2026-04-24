@@ -56,33 +56,166 @@ uint32 FFItemMgr::GetWeaponForInventoryType(std::string subclassStr, std::string
     return GetItemForInventoryType(classStr, subclassStr, inventoryTypesStr);
 }
 
+//uint32 FFItemMgr::GetOffhandWeaponForInventoryType(std::string subclassStr, std::string inventoryTypesStr, uint32 primaryWeapon)
+//{
+//    std::string classStr = "2";
+//    uint8 reqLevelLow = level - 5;
+//    uint8 reqLevelHigh = level - 1;
+//    QueryResult result = WorldDatabase.Query("SELECT `entry`,`ItemLevel`,`RequiredLevel`,`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,`stat_type10`,`stat_value10`,`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` FROM `item_template` WHERE class = '{}' AND subclass IN ({}) AND InventoryType IN ({}) AND RequiredLevel BETWEEN '{}' AND '{}' AND RequiredSkill = 0 AND RequiredSpell = 0 AND Quality <= 3 AND (Flags&16) = 0 AND (FlagsExtra&3) = 0 AND (AllowableClass = -1 OR AllowableClass = 262143) AND name NOT LIKE 'TEST%' AND RandomProperty = 0 AND RandomSuffix = 0 AND entry <> '{}' ORDER BY ItemLevel, BuyPrice DESC Limit 8", classStr, subclassStr, inventoryTypesStr, reqLevelLow, reqLevelHigh, primaryWeapon);
+//    return GetBestItemFromResults(result);
+//}
+
 uint32 FFItemMgr::GetOffhandWeaponForInventoryType(std::string subclassStr, std::string inventoryTypesStr, uint32 primaryWeapon)
 {
     std::string classStr = "2";
-    uint8 reqLevelLow = level - 5;
-    uint8 reqLevelHigh = level - 1;
-    QueryResult result = WorldDatabase.Query("SELECT `entry`,`ItemLevel`,`RequiredLevel`,`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,`stat_type10`,`stat_value10`,`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` FROM `item_template` WHERE class = '{}' AND subclass IN ({}) AND InventoryType IN ({}) AND RequiredLevel BETWEEN '{}' AND '{}' AND RequiredSkill = 0 AND RequiredSpell = 0 AND Quality <= 3 AND (Flags&16) = 0 AND (FlagsExtra&3) = 0 AND (AllowableClass = -1 OR AllowableClass = 262143) AND name NOT LIKE 'TEST%' AND RandomProperty = 0 AND RandomSuffix = 0 AND entry <> '{}' ORDER BY ItemLevel, BuyPrice DESC Limit 8", classStr, subclassStr, inventoryTypesStr, reqLevelLow, reqLevelHigh, primaryWeapon);
+
+    uint8 reqLevelLow = level > 5 ? level - 5 : 1;
+    uint8 reqLevelHigh = level > 1 ? level - 1 : 1;
+
+    QueryResult result = WorldDatabase.Query(
+        "SELECT `entry`,`ItemLevel`,`RequiredLevel`,"
+        "`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,"
+        "`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,"
+        "`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,"
+        "`stat_type10`,`stat_value10`,"
+        "`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` "
+        "FROM `item_template` "
+        "WHERE `class` = '{}' "
+        "AND `subclass` IN ({}) "
+        "AND `InventoryType` IN ({}) "
+        "AND `RequiredLevel` BETWEEN '{}' AND '{}' "
+        "AND `RequiredSkill` = 0 "
+        "AND `RequiredSkillRank` = 0 "
+        "AND `RequiredSpell` = 0 "
+        "AND `RequiredReputationFaction` = 0 "
+        "AND `RequiredReputationRank` = 0 "
+        "AND `RequiredHonorRank` = 0 "
+        "AND `RequiredCityRank` = 0 "
+        "AND `Quality` <= 3 "
+        "AND (`Flags` & 16) = 0 "
+        "AND (`FlagsExtra` & 3) = 0 "
+        "AND (`AllowableClass` = -1 OR `AllowableClass` = 262143) "
+        "AND `name` NOT LIKE 'TEST%' "
+        "AND `RandomProperty` = 0 "
+        "AND `RandomSuffix` = 0 "
+        "AND `entry` <> '{}' "
+        "ORDER BY `ItemLevel`, `BuyPrice` DESC "
+        "LIMIT 8",
+        classStr,
+        subclassStr,
+        inventoryTypesStr,
+        reqLevelLow,
+        reqLevelHigh,
+        primaryWeapon);
+
     return GetBestItemFromResults(result);
 }
+
 
 uint32 FFItemMgr::GetMiscForInventoryType(std::string inventoryTypesStr)
 {
     return GetItemForInventoryType("4", "0", inventoryTypesStr);
 }
 
+//uint32 FFItemMgr::GetItemForInventoryType(std::string classStr, std::string subclassStr, std::string inventoryTypesStr)
+//{
+//    uint8 reqLevelLow = level - 5;
+//    uint8 reqLevelHigh = level - 1;
+//    QueryResult result = WorldDatabase.Query("SELECT `entry`,`ItemLevel`,`RequiredLevel`,`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,`stat_type10`,`stat_value10`,`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` FROM `item_template` WHERE class = '{}' AND subclass IN ({}) AND InventoryType IN ({}) AND RequiredLevel BETWEEN '{}' AND '{}' AND RequiredSkill = 0 AND RequiredSpell = 0 AND Quality <= 3 AND (Flags&16) = 0 AND (FlagsExtra&3) = 0 AND (AllowableClass = -1 OR AllowableClass = 262143) AND name NOT LIKE 'TEST%' AND RandomProperty = 0 AND RandomSuffix = 0 ORDER BY ItemLevel, BuyPrice DESC Limit 8", classStr, subclassStr, inventoryTypesStr, reqLevelLow, reqLevelHigh);
+//    return GetBestItemFromResults(result);
+//}
+
 uint32 FFItemMgr::GetItemForInventoryType(std::string classStr, std::string subclassStr, std::string inventoryTypesStr)
 {
-    uint8 reqLevelLow = level - 5;
-    uint8 reqLevelHigh = level - 1;
-    QueryResult result = WorldDatabase.Query("SELECT `entry`,`ItemLevel`,`RequiredLevel`,`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,`stat_type10`,`stat_value10`,`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` FROM `item_template` WHERE class = '{}' AND subclass IN ({}) AND InventoryType IN ({}) AND RequiredLevel BETWEEN '{}' AND '{}' AND RequiredSkill = 0 AND RequiredSpell = 0 AND Quality <= 3 AND (Flags&16) = 0 AND (FlagsExtra&3) = 0 AND (AllowableClass = -1 OR AllowableClass = 262143) AND name NOT LIKE 'TEST%' AND RandomProperty = 0 AND RandomSuffix = 0 ORDER BY ItemLevel, BuyPrice DESC Limit 8", classStr, subclassStr, inventoryTypesStr, reqLevelLow, reqLevelHigh);
+    uint8 reqLevelLow = level > 5 ? level - 5 : 1;
+    uint8 reqLevelHigh = level > 1 ? level - 1 : 1;
+
+    QueryResult result = WorldDatabase.Query(
+        "SELECT `entry`,`ItemLevel`,`RequiredLevel`,"
+        "`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,"
+        "`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,"
+        "`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,"
+        "`stat_type10`,`stat_value10`,"
+        "`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` "
+        "FROM `item_template` "
+        "WHERE `class` = '{}' "
+        "AND `subclass` IN ({}) "
+        "AND `InventoryType` IN ({}) "
+        "AND `RequiredLevel` BETWEEN '{}' AND '{}' "
+        "AND `RequiredSkill` = 0 "
+        "AND `RequiredSkillRank` = 0 "
+        "AND `RequiredSpell` = 0 "
+        "AND `RequiredReputationFaction` = 0 "
+        "AND `RequiredReputationRank` = 0 "
+        "AND `RequiredHonorRank` = 0 "
+        "AND `RequiredCityRank` = 0 "
+        "AND `Quality` <= 3 "
+        "AND (`Flags` & 16) = 0 "
+        "AND (`FlagsExtra` & 3) = 0 "
+        "AND (`AllowableClass` = -1 OR `AllowableClass` = 262143) "
+        "AND `name` NOT LIKE 'TEST%' "
+        "AND `RandomProperty` = 0 "
+        "AND `RandomSuffix` = 0 "
+        "ORDER BY `ItemLevel`, `BuyPrice` DESC "
+        "LIMIT 8",
+        classStr,
+        subclassStr,
+        inventoryTypesStr,
+        reqLevelLow,
+        reqLevelHigh);
+
     return GetBestItemFromResults(result);
 }
 
+//uint32 FFItemMgr::GetSecondaryItemForInventoryType(std::string classStr, std::string subclassStr, std::string inventoryTypesStr, uint32 primaryItem)
+//{
+//    uint8 reqLevelLow = level - 5;
+//    uint8 reqLevelHigh = level - 1;
+//    QueryResult result = WorldDatabase.Query("SELECT `entry`,`ItemLevel`,`RequiredLevel`,`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,`stat_type10`,`stat_value10`,`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` FROM `item_template` WHERE class = '{}' AND subclass IN ({}) AND InventoryType IN ({}) AND RequiredLevel BETWEEN '{}' AND '{}' AND RequiredSkill = 0 AND RequiredSpell = 0 AND Quality <= 3 AND (Flags&16) = 0 AND (FlagsExtra&3) = 0 AND (AllowableClass = -1 OR AllowableClass = 262143) AND name NOT LIKE 'TEST%' AND RandomProperty = 0 AND RandomSuffix = 0 AND entry <> '{}' ORDER BY ItemLevel, BuyPrice DESC Limit 8", classStr, subclassStr, inventoryTypesStr, reqLevelLow, reqLevelHigh, primaryItem);
+//    return GetBestItemFromResults(result);
+//}
+
 uint32 FFItemMgr::GetSecondaryItemForInventoryType(std::string classStr, std::string subclassStr, std::string inventoryTypesStr, uint32 primaryItem)
 {
-    uint8 reqLevelLow = level - 5;
-    uint8 reqLevelHigh = level - 1;
-    QueryResult result = WorldDatabase.Query("SELECT `entry`,`ItemLevel`,`RequiredLevel`,`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,`stat_type10`,`stat_value10`,`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` FROM `item_template` WHERE class = '{}' AND subclass IN ({}) AND InventoryType IN ({}) AND RequiredLevel BETWEEN '{}' AND '{}' AND RequiredSkill = 0 AND RequiredSpell = 0 AND Quality <= 3 AND (Flags&16) = 0 AND (FlagsExtra&3) = 0 AND (AllowableClass = -1 OR AllowableClass = 262143) AND name NOT LIKE 'TEST%' AND RandomProperty = 0 AND RandomSuffix = 0 AND entry <> '{}' ORDER BY ItemLevel, BuyPrice DESC Limit 8", classStr, subclassStr, inventoryTypesStr, reqLevelLow, reqLevelHigh, primaryItem);
+    uint8 reqLevelLow = level > 5 ? level - 5 : 1;
+    uint8 reqLevelHigh = level > 1 ? level - 1 : 1;
+
+    QueryResult result = WorldDatabase.Query(
+        "SELECT `entry`,`ItemLevel`,`RequiredLevel`,"
+        "`stat_type1`,`stat_value1`,`stat_type2`,`stat_value2`,`stat_type3`,`stat_value3`,"
+        "`stat_type4`,`stat_value4`,`stat_type5`,`stat_value5`,`stat_type6`,`stat_value6`,"
+        "`stat_type7`,`stat_value7`,`stat_type8`,`stat_value8`,`stat_type9`,`stat_value9`,"
+        "`stat_type10`,`stat_value10`,"
+        "`dmg_min1`,`dmg_max1`,`dmg_min2`,`dmg_max2`,`armor`,`delay` "
+        "FROM `item_template` "
+        "WHERE `class` = '{}' "
+        "AND `subclass` IN ({}) "
+        "AND `InventoryType` IN ({}) "
+        "AND `RequiredLevel` BETWEEN '{}' AND '{}' "
+        "AND `RequiredSkill` = 0 "
+        "AND `RequiredSkillRank` = 0 "
+        "AND `RequiredSpell` = 0 "
+        "AND `RequiredReputationFaction` = 0 "
+        "AND `RequiredReputationRank` = 0 "
+        "AND `RequiredHonorRank` = 0 "
+        "AND `RequiredCityRank` = 0 "
+        "AND `Quality` <= 3 "
+        "AND (`Flags` & 16) = 0 "
+        "AND (`FlagsExtra` & 3) = 0 "
+        "AND (`AllowableClass` = -1 OR `AllowableClass` = 262143) "
+        "AND `name` NOT LIKE 'TEST%' "
+        "AND `RandomProperty` = 0 "
+        "AND `RandomSuffix` = 0 "
+        "AND `entry` <> '{}' "
+        "ORDER BY `ItemLevel`, `BuyPrice` DESC "
+        "LIMIT 8",
+        classStr,
+        subclassStr,
+        inventoryTypesStr,
+        reqLevelLow,
+        reqLevelHigh,
+        primaryItem);
+
     return GetBestItemFromResults(result);
 }
 
@@ -330,6 +463,21 @@ uint32 FFItemMgr::GetSecondaryItem(uint32 primaryWeapon)
         else {
             secondaryItemForClass = GetOffhandWeaponForInventoryType("0,4,13,15", "13,22", primaryWeapon); // Dual Wield
         }
+        break;
+    case TALENT_TREE_PRIEST_DISCIPLINE:
+    case TALENT_TREE_PRIEST_HOLY:
+    case TALENT_TREE_PRIEST_SHADOW:
+    case TALENT_TREE_MAGE_ARCANE:
+    case TALENT_TREE_MAGE_FIRE:
+    case TALENT_TREE_MAGE_FROST:
+    case TALENT_TREE_WARLOCK_AFFLICTION:
+    case TALENT_TREE_WARLOCK_DEMONOLOGY:
+    case TALENT_TREE_WARLOCK_DESTRUCTION:
+    case TALENT_TREE_DRUID_BALANCE:
+    case TALENT_TREE_DRUID_RESTORATION:
+    case TALENT_TREE_SHAMAN_ELEMENTAL:
+    case TALENT_TREE_SHAMAN_RESTORATION:
+        secondaryItemForClass = GetItemForInventoryType("4", "0", "23"); // Held in off-hand / caster off-hand
         break;
     default:
         break;
