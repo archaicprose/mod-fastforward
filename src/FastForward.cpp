@@ -243,7 +243,7 @@ public:
             CharacterDatabase.CommitTransaction(trans);
 
             // =======|   CLAIM     |=======
-            CharacterDatabase.Execute("UPDATE acore_characters.ff_character_prep SET claimed = 1 WHERE account_id = '{}' AND level = '{}';", accountId, targetLevel);
+            CharacterDatabase.Execute("UPDATE ff_character_prep SET claimed = 1 WHERE account_id = '{}' AND level = '{}';", accountId, targetLevel);
 
             auto finishTime = std::chrono::high_resolution_clock::now();
             auto totalDuration = std::chrono::duration_cast<std::chrono::milliseconds>(finishTime - startTime);
