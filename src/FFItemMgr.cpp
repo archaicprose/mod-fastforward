@@ -102,7 +102,6 @@ uint32 FFItemMgr::GetOffhandWeaponForInventoryType(std::string subclassStr, std:
     return GetBestItemFromResults(result);
 }
 
-
 uint32 FFItemMgr::GetMiscForInventoryType(std::string inventoryTypesStr)
 {
     return GetItemForInventoryType("4", "0", inventoryTypesStr);
