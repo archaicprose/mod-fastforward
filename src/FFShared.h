@@ -41,12 +41,30 @@ enum FFSpecDefinition {
     DRUID_BALANCE = 28,
     DRUID_FERAL_COMBAT = 29,
     DRUID_RESTORATION = 30,
-    DRUID_FERAL_TANK = 99 // special value for stat prioritization
+    DRUID_FERAL_TANK = 99,  // special value for stat prioritization
+
+    UNDECIDED_PROTECTION = 101, // Protection spec, Warrior or Paladin
+    UNDECIDED_HOLY = 102,       // Holy spec, Paladin or Priest
+    UNDECIDED_FROST = 103,      // Frost spec, Mage or Death Knight
+    UNDECIDED_RESTORATION = 104 // Restoration spec, Shaman or Druid
+};
+
+enum FFStageDefinition {
+    TIER_ONE = 101, // Molten Core
+    TIER_TWO = 102, // Blackwing Lair
+    TIER_THREE = 103, // Naxxramas
+    TIER_FOUR = 104, // Karazhan, Gruul's Lair, Magtheridon's Lair
+    TIER_FIVE = 105, // Serpentshrine Cavern, The Eye
+    TIER_SIX = 106, // Battle for Mount Hyjal, Black Temple, Sunwell Plateau
+    TIER_SEVEN = 107, // Naxxramas, Obsidian Sanctum
+    TIER_EIGHT = 108, // Ulduar
+    TIER_NINE = 109, // Crusaders' Coliseum
+    TIER_TEN = 110, // Icecrown Citadel
 };
 
 class FFSpecMgr {
 public:
-    static FFSpec* GetSpecInfo(uint8 spec);
+    static FFSpec* GetSpecInfo(uint8 spec, uint8 classActual);
 };
 
 #endif // !FF_SHARED_H

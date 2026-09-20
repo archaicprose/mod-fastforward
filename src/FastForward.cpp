@@ -19,7 +19,7 @@ bool FastForward::IsLevelAllowed(int level) const
 class FF_WorldScript : public WorldScript
 {
 public:
-    FF_WorldScript() : WorldScript("FF_WorldScript") { }
+    FF_WorldScript() : WorldScript("FF_WorldScript") {}
 
     void OnBeforeConfigLoad(bool /*reload*/) override
     {
@@ -39,9 +39,9 @@ private:
 class FF_Character_Prep : public PlayerScript
 {
 public:
-    FF_Character_Prep() : PlayerScript("FF_Character_Prep") { }
+    FF_Character_Prep() : PlayerScript("FF_Character_Prep") {}
 
-    void OnPlayerCreate(Player *p) override
+    void OnPlayerCreate(Player* p) override
     {
         if (!sFastForward->Enabled()) {
             return;
@@ -53,15 +53,17 @@ public:
         {
             auto startTime = std::chrono::high_resolution_clock::now();
 
+            uint8 classActual = p->getClass();
+
             Field* fields = result->Fetch();
             uint8 targetSpec = fields[0].Get<uint8>();
             uint8 targetLevel = fields[1].Get<uint8>();
             TeamId pTeam = p->GetTeamId();
-            FFSpec* specInfo = FFSpecMgr::GetSpecInfo(targetSpec);
+            FFSpec* specInfo = FFSpecMgr::GetSpecInfo(targetSpec, classActual);
             FFItemMgr* itemMgr = new FFItemMgr(targetLevel, p->getRace(), specInfo);
 
             // Is this preparation valid for this new character?
-            if (itemMgr->GetIntendedClass() != p->getClass()) {
+            if (itemMgr->GetIntendedClass() != classActual) {
                 return;
             }
 
@@ -83,7 +85,7 @@ public:
             uint32 bagType = (targetLevel < 60) ? 10050 :   // Mageweave
                 (targetLevel < 70) ? 21841 :                // Netherweave
                 41599;                                      // Frostweave
-            if (p->getClass() == CLASS_DEATH_KNIGHT) {
+            if (classActual == CLASS_DEATH_KNIGHT) {
                 // DKs start with bags equipped. Rather than deal with bag-space issues, just add new bags to inventory
                 p->AddItem(bagType, 5);
             }
@@ -419,10 +421,115 @@ private:
     }
 };
 
+const std::unordered_map<std::string, int> FF_SPEC_SHORTHAND =
+{
+    { "arms",               FFSpecDefinition::WARRIOR_ARMS },
+    { "fury",               FFSpecDefinition::WARRIOR_FURY },
+    { "wprot",              FFSpecDefinition::WARRIOR_PROTECTION },
+    { "protw",              FFSpecDefinition::WARRIOR_PROTECTION },
+    { "protwar",            FFSpecDefinition::WARRIOR_PROTECTION },
+    { "protwarrior",        FFSpecDefinition::WARRIOR_PROTECTION },
+    { "protectionwar",      FFSpecDefinition::WARRIOR_PROTECTION },
+    { "protectionwarrior",  FFSpecDefinition::WARRIOR_PROTECTION },
+    { "hpal",               FFSpecDefinition::PALADIN_HOLY },
+    { "holypal",            FFSpecDefinition::PALADIN_HOLY },
+    { "holypally",          FFSpecDefinition::PALADIN_HOLY },
+    { "holypaladin",        FFSpecDefinition::PALADIN_HOLY },
+    { "pprot",              FFSpecDefinition::PALADIN_PROTECTION },
+    { "protp",              FFSpecDefinition::PALADIN_PROTECTION },
+    { "protpal",            FFSpecDefinition::PALADIN_PROTECTION },
+    { "protpally",          FFSpecDefinition::PALADIN_PROTECTION },
+    { "protpaladin",        FFSpecDefinition::PALADIN_PROTECTION },
+    { "protectionpally",    FFSpecDefinition::PALADIN_PROTECTION },
+    { "protectionpaladin",  FFSpecDefinition::PALADIN_PROTECTION },
+    { "ret",                FFSpecDefinition::PALADIN_RETRIBUTION },
+    { "retribution",        FFSpecDefinition::PALADIN_RETRIBUTION },
+    { "bm",                 FFSpecDefinition::HUNTER_BEAST_MASTERY },
+    { "beastmaster",        FFSpecDefinition::HUNTER_BEAST_MASTERY },
+    { "beastmastery",       FFSpecDefinition::HUNTER_BEAST_MASTERY },
+    { "mm",                 FFSpecDefinition::HUNTER_MARKSMANSHIP },
+    { "mark",               FFSpecDefinition::HUNTER_MARKSMANSHIP },
+    { "marks",              FFSpecDefinition::HUNTER_MARKSMANSHIP },
+    { "marksman",           FFSpecDefinition::HUNTER_MARKSMANSHIP },
+    { "marksmanship",       FFSpecDefinition::HUNTER_MARKSMANSHIP },
+    { "sv",                 FFSpecDefinition::HUNTER_SURVIVAL },
+    { "surv",               FFSpecDefinition::HUNTER_SURVIVAL },
+    { "survival",           FFSpecDefinition::HUNTER_SURVIVAL },
+    { "ass",                FFSpecDefinition::ROGUE_ASSASSINATION },
+    { "sin",                FFSpecDefinition::ROGUE_ASSASSINATION },
+    { "assassination",      FFSpecDefinition::ROGUE_ASSASSINATION },
+    { "assassin",           FFSpecDefinition::ROGUE_ASSASSINATION },
+    { "com",                FFSpecDefinition::ROGUE_COMBAT },
+    { "combat",             FFSpecDefinition::ROGUE_COMBAT },
+    { "sub",                FFSpecDefinition::ROGUE_SUBTLETY },
+    { "subtle",             FFSpecDefinition::ROGUE_SUBTLETY },
+    { "subtlety",           FFSpecDefinition::ROGUE_SUBTLETY },
+    { "disc",               FFSpecDefinition::PRIEST_DISCIPLINE },
+    { "discipline",         FFSpecDefinition::PRIEST_DISCIPLINE },
+    { "hpriest",            FFSpecDefinition::PRIEST_HOLY },
+    { "holypriest",         FFSpecDefinition::PRIEST_HOLY },
+    { "priestholy",         FFSpecDefinition::PRIEST_HOLY },
+    { "shadow",             FFSpecDefinition::PRIEST_SHADOW },
+    { "bdk",                FFSpecDefinition::DEATH_KNIGHT_BLOOD },
+    { "blood",              FFSpecDefinition::DEATH_KNIGHT_BLOOD },
+    { "fdk",                FFSpecDefinition::DEATH_KNIGHT_FROST },
+    { "frostdk",            FFSpecDefinition::DEATH_KNIGHT_FROST },
+    { "frosttank",          FFSpecDefinition::DEATH_KNIGHT_FROST },
+    { "uh",                 FFSpecDefinition::DEATH_KNIGHT_UNHOLY },
+    { "uhdk",               FFSpecDefinition::DEATH_KNIGHT_UNHOLY },
+    { "unholy",             FFSpecDefinition::DEATH_KNIGHT_UNHOLY },
+    { "ele",                FFSpecDefinition::SHAMAN_ELEMENTAL },
+    { "elem",               FFSpecDefinition::SHAMAN_ELEMENTAL },
+    { "elemental",          FFSpecDefinition::SHAMAN_ELEMENTAL },
+    { "enh",                FFSpecDefinition::SHAMAN_ENHANCEMENT },
+    { "enhance",            FFSpecDefinition::SHAMAN_ENHANCEMENT },
+    { "enhancement",        FFSpecDefinition::SHAMAN_ENHANCEMENT },
+    { "rsham",              FFSpecDefinition::SHAMAN_RESTORATION },
+    { "restosham",          FFSpecDefinition::SHAMAN_RESTORATION },
+    { "restoshaman",        FFSpecDefinition::SHAMAN_RESTORATION },
+    { "restoshammy",        FFSpecDefinition::SHAMAN_RESTORATION },
+    { "restorationshaman",  FFSpecDefinition::SHAMAN_RESTORATION },
+    { "arc",                FFSpecDefinition::MAGE_ARCANE },
+    { "arcane",             FFSpecDefinition::MAGE_ARCANE },
+    { "fire",               FFSpecDefinition::MAGE_FIRE },
+    { "frostmage",          FFSpecDefinition::MAGE_FROST },
+    { "aff",                FFSpecDefinition::WARLOCK_AFFLICTION },
+    { "afflict",            FFSpecDefinition::WARLOCK_AFFLICTION },
+    { "affliction",         FFSpecDefinition::WARLOCK_AFFLICTION },
+    { "demo",               FFSpecDefinition::WARLOCK_DEMONOLOGY },
+    { "demolock",           FFSpecDefinition::WARLOCK_DEMONOLOGY },
+    { "demonology",         FFSpecDefinition::WARLOCK_DEMONOLOGY },
+    { "destro",             FFSpecDefinition::WARLOCK_DESTRUCTION },
+    { "destrolock",         FFSpecDefinition::WARLOCK_DESTRUCTION },
+    { "destruction",        FFSpecDefinition::WARLOCK_DESTRUCTION },
+    { "bal",                FFSpecDefinition::DRUID_BALANCE },
+    { "boom",               FFSpecDefinition::DRUID_BALANCE },
+    { "boomy",              FFSpecDefinition::DRUID_BALANCE },
+    { "balance",            FFSpecDefinition::DRUID_BALANCE },
+    { "cat",                FFSpecDefinition::DRUID_FERAL_COMBAT },
+    { "feral",              FFSpecDefinition::DRUID_FERAL_COMBAT },
+    { "tree",               FFSpecDefinition::DRUID_RESTORATION },
+    { "restodruid",         FFSpecDefinition::DRUID_RESTORATION },
+    { "restorationdruid",   FFSpecDefinition::DRUID_RESTORATION },
+    { "bear",               FFSpecDefinition::DRUID_FERAL_TANK },
+    { "guardian",           FFSpecDefinition::DRUID_FERAL_TANK },
+    { "holy",               FFSpecDefinition::UNDECIDED_HOLY },
+    { "prot",               FFSpecDefinition::UNDECIDED_PROTECTION },
+    { "protection",         FFSpecDefinition::UNDECIDED_PROTECTION },
+    { "frost",              FFSpecDefinition::UNDECIDED_FROST },
+    { "resto",              FFSpecDefinition::UNDECIDED_RESTORATION },
+    { "restoration",        FFSpecDefinition::UNDECIDED_RESTORATION }
+};
+
+const std::unordered_map<std::string, std::vector<int>> FF_STAGE_SHORTHAND =
+{
+    // todo - future work
+};
+
 class FF_Command : public CommandScript
 {
 public:
-    FF_Command() : CommandScript("FF_Command") { }
+    FF_Command() : CommandScript("FF_Command") {}
 
     Acore::ChatCommands::ChatCommandTable GetCommands() const override
     {
@@ -450,51 +557,14 @@ public:
         return true;
     }
 
-    static bool HandlePrepCommand(ChatHandler* handler, int pSpec, int pLevel) {
-        if (!sFastForward->Enabled()) { return true; }
-
-        if (!sFastForward->IsLevelAllowed(pLevel)) {
-            handler->PSendSysMessage("Level out of allowable range for pregenerated characters.");
-            return false;
-        }
-
-        if (pSpec <= 0 || (pSpec > 30 && pSpec != 99)) {
-            handler->PSendSysMessage("Spec must correspond to a valid class talent tree spec. See FastForward spec list.");
-            return false;
-        }
-
+    static bool HandlePrepCommand(ChatHandler* handler, std::string pSpec, std::string pLevel) {
         uint32 accountId = handler->GetSession()->GetAccountId();
-        PrepCharacterCore(accountId, pSpec, pLevel);
-        handler->PSendSysMessage("Fast-forward successful. Character matching criteria will be auto-scaled on first login.");
-
-        return true;
+        return HandlePrepCore(handler, accountId, pSpec, pLevel);
     }
 
-    static bool HandlePrepForCommand(ChatHandler* handler, std::string accountName, int spec, int level) {
-        if (!sFastForward->Enabled()) { return true; }
-
-        if (!sFastForward->IsLevelAllowed(level)) {
-            handler->PSendSysMessage("Level out of allowable range for pregenerated characters.");
-            return false;
-        }
-
-        if (spec <= 0 || (spec > 30 && spec != 99)) {
-            handler->PSendSysMessage("Spec must correspond to a valid class talent tree spec. See FastForward spec list.");
-            return false;
-        }
-
+    static bool HandlePrepForCommand(ChatHandler* handler, std::string accountName, std::string pSpec, std::string pLevel) {
         uint32 accountId = LookupAccountByName(handler, accountName);
-        if (accountId > 0) {
-            PrepCharacterCore(accountId, spec, level);
-            handler->PSendSysMessage("Fast-forward successful. Character matching criteria will be auto-scaled on first login.");
-        }
-
-        return true;
-    }
-
-    static bool PrepCharacterCore(uint32 accountId, int spec, int level) {
-        CharacterDatabase.Execute("INSERT INTO `ff_character_prep` (`account_id`,`spec`,`level`,`stage`,`claimed`,`created_on`) VALUES ('{}', '{}', '{}', '0', '0', NOW());", accountId, spec, level);
-        return true;
+        return HandlePrepCore(handler, accountId, pSpec, pLevel);
     }
 
     static bool HandleCancelCommand(ChatHandler* handler) {
@@ -519,6 +589,35 @@ public:
         return true;
     }
 
+private:
+    static bool HandlePrepCore(ChatHandler* handler, uint32 accountId, std::string pSpec, std::string pLevel) {
+        if (!sFastForward->Enabled()) { return true; }
+
+        std::vector<int> levelStageInfo = TryGetLevelStage(pLevel);
+        int level = levelStageInfo[0];
+        int stageCode = levelStageInfo[1];
+        if (!sFastForward->IsLevelAllowed(level)) {
+            handler->PSendSysMessage("Level out of allowable range for pregenerated characters.");
+            return false;
+        }
+
+        int specCode = TryGetSpecCode(pSpec);
+        if (specCode <= 0 || (specCode > 30 && specCode != 99 && specCode < 101) || specCode > 104) {
+            handler->PSendSysMessage(Acore::StringFormat("Spec must correspond to a valid class talent tree spec [{}]. See FastForward spec list.", specCode).c_str());
+            return false;
+        }
+
+        PrepCharacterCore(accountId, specCode, level, stageCode);
+        handler->PSendSysMessage("Fast-forward successful. Character matching criteria will be auto-scaled on first login.");
+
+        return true;
+    }
+
+    static bool PrepCharacterCore(uint32 accountId, int specCode, int level, int stageCode) {
+        CharacterDatabase.Execute("INSERT INTO `ff_character_prep` (`account_id`,`spec`,`level`,`stage`,`claimed`,`created_on`) VALUES ('{}', '{}', '{}', '{}', '0', NOW());", accountId, specCode, level, stageCode);
+        return true;
+    }
+
     static bool CancelPrepCore(uint32 accountId) {
         CharacterDatabase.Execute("UPDATE `ff_character_prep` SET `claimed` = 1 WHERE `claimed` = 0 AND `account_id` = '{}';", accountId);
         return true;
@@ -534,6 +633,56 @@ public:
             handler->PSendSysMessage(Acore::StringFormat("Unable to find account with username {}.", username).c_str());
             return 0;
         }
+    }
+
+    static int TryGetSpecCode(std::string stringInput) {
+
+        int specCode = 0;
+        std::string lowerInput = stringInput;
+        std::transform(lowerInput.begin(), lowerInput.end(), lowerInput.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+        if (FF_SPEC_SHORTHAND.contains(lowerInput)) {
+            specCode = FF_SPEC_SHORTHAND.at(lowerInput);
+        }
+        else {
+            try {
+                specCode = std::stoi(stringInput);
+            }
+            catch (const std::invalid_argument e) {
+                specCode = 0;
+            }
+            catch (const std::out_of_range e) {
+                specCode = 0;
+            }
+        }
+
+        return specCode;
+    }
+
+    static std::vector<int> TryGetLevelStage(std::string levelInput) {
+        std::vector<int> levelStage;
+        std::string lowerInput = levelInput;
+        std::transform(lowerInput.begin(), lowerInput.end(), lowerInput.begin(),
+            [](unsigned char c) { return std::tolower(c); });
+        if (FF_STAGE_SHORTHAND.contains(lowerInput)) {
+            levelStage = FF_STAGE_SHORTHAND.at(lowerInput);
+        }
+        else {
+            int level = 0;
+            try {
+                level = std::stoi(levelInput);
+            }
+            catch (const std::invalid_argument e) {
+                level = 0;
+            }
+            catch (const std::out_of_range e) {
+                level = 0;
+            }
+
+            levelStage = { level, 0 };
+        }
+
+        return levelStage;
     }
 };
 

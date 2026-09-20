@@ -1,6 +1,6 @@
 #include "FFShared.h"
 
-FFSpec* FFSpecMgr::GetSpecInfo(uint8 spec) {
+FFSpec* FFSpecMgr::GetSpecInfo(uint8 spec, uint8 classActual) {
     FFSpec* info = new FFSpec();
     info->fforiginal = spec;
     switch (spec)
@@ -125,6 +125,54 @@ FFSpec* FFSpecMgr::GetSpecInfo(uint8 spec) {
     case DRUID_RESTORATION:
         info->ffclass = CLASS_DRUID;
         info->ffspec = TALENT_TREE_DRUID_RESTORATION;
+        break;
+    case UNDECIDED_PROTECTION:
+        if (classActual == CLASS_PALADIN) {
+            info->fforiginal = PALADIN_PROTECTION;
+            info->ffclass = CLASS_PALADIN;
+            info->ffspec = TALENT_TREE_PALADIN_PROTECTION;
+        }
+        else {
+            info->fforiginal = WARRIOR_PROTECTION;
+            info->ffclass = CLASS_WARRIOR;
+            info->ffspec = TALENT_TREE_WARRIOR_PROTECTION;
+        }
+        break;
+    case UNDECIDED_HOLY:
+        if (classActual == CLASS_PALADIN) {
+            info->fforiginal = PALADIN_PROTECTION;
+            info->ffclass = CLASS_PALADIN;
+            info->ffspec = TALENT_TREE_PALADIN_PROTECTION;
+        }
+        else {
+            info->fforiginal = PRIEST_HOLY;
+            info->ffclass = CLASS_PRIEST;
+            info->ffspec = TALENT_TREE_PRIEST_HOLY;
+        }
+        break;
+    case UNDECIDED_FROST:
+        if (classActual == CLASS_DEATH_KNIGHT) {
+            info->fforiginal = DEATH_KNIGHT_FROST;
+            info->ffclass = CLASS_DEATH_KNIGHT;
+            info->ffspec = TALENT_TREE_DEATH_KNIGHT_FROST;
+        }
+        else {
+            info->fforiginal = MAGE_FROST;
+            info->ffclass = CLASS_MAGE;
+            info->ffspec = TALENT_TREE_MAGE_FROST;
+        }
+        break;
+    case UNDECIDED_RESTORATION:
+        if (classActual == CLASS_SHAMAN) {
+            info->fforiginal = SHAMAN_RESTORATION;
+            info->ffclass = CLASS_SHAMAN;
+            info->ffspec = TALENT_TREE_SHAMAN_RESTORATION;
+        }
+        else {
+            info->fforiginal = DRUID_RESTORATION;
+            info->ffclass = CLASS_DRUID;
+            info->ffspec = TALENT_TREE_DRUID_RESTORATION;
+        }
         break;
     default:
         break;
